@@ -12,7 +12,7 @@ var nextHobbyId = 1;
 var nextMovieId = 1;
 
 //if no state argument, it's going to use the "name" object insted, below commented text does the same, but uncommented text is the ES6 way.
-var reducer = (state = stateDefault, action) => { 
+var oldReducer = (state = stateDefault, action) => { 
     //state = state || {name: 'Anonymous'};
     switch (action.type) {
         case 'CHANGE_NAME':
@@ -57,6 +57,56 @@ var reducer = (state = stateDefault, action) => {
             return state;
     }
 };
+
+var nameReducer = (state = "Anonymous", action) => {
+    switch (action.type) {
+        case 'CHANGE_NAME':
+            return action.name
+        default:
+            return state;
+    }
+};
+
+var hobbiesReducer = (state = [], action) => {
+    switch (action.type) {
+        case 'ADD_HOBBY':
+            return [ //creating array and adding onto the existing hobbies
+                    ...state,
+                    {
+                        id: nextHobbyId++,
+                        hobby: action.hobby                
+                    }
+                ];
+        case 'REMOVE_HOBBY': 
+            return state.filter((hobby) => hobby.id !== action.id); //keep item in array if true is returned
+        default:
+            return state;
+    }
+};
+
+var moviesReducer = (state = [], action) => {
+    switch (action.type) {
+        case 'ADD_MOVIE':
+            return [ //creating array and adding onto the existing hobbies
+                    ...state,
+                    {
+                        id: nextMovieId++,
+                        title: action.title,
+                        genre: action.genre            
+                    }
+                ];
+        case 'REMOVE_MOVIE': 
+            return state.filter((movie) => movie.id !== action.id)
+        default:
+            return state;
+    }
+};
+
+var reducer = redux.combineReducers({
+    name: nameReducer, //name state, is going to be managed by the nameReducer 
+    hobbies: hobbiesReducer,
+    movies: moviesReducer
+});
 
 var store = redux.createStore(reducer, redux.compose(
     window.devToolsExtension ? window.devToolsExtension() : f => f
