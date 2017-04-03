@@ -25,6 +25,8 @@ var store = redux.createStore(reducer, redux.compose(
     window.devToolsExtension ? window.devToolsExtension() : f => f
 ));
 
+//subscribe to changes
+
 var unsubscribe = store.subscribe(() => {
     var state = store.getState();
     
